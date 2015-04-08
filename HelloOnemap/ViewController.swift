@@ -20,7 +20,7 @@ class ViewController: UIViewController, AGSMapViewLayerDelegate, UISearchResults
     let xmax = 30037.5707551916
     let ymax = 40765.3094566208
     
-    let data = ["Cityhall", "CityCenter", "CityShit"]
+    var data = ["Cityhall", "CityCenter", "CityShit"]
     
     var resultTableViewController = UITableViewController()
     var searchController = UISearchController()
@@ -96,8 +96,32 @@ class ViewController: UIViewController, AGSMapViewLayerDelegate, UISearchResults
     
     func updateSearchResultsForSearchController(searchController: UISearchController) {
         
+        getAddresses("")
         
-        resultTableViewController.tableView.reloadData()
+    }
+    
+    // Call OneMap's Address Search API to search a location in Singapore
+    func getAddresses(keyWord: String ){
+        let urlString = "http://www.onemap.sg/API/services.svc/basicSearch?token=qo/s2TnSUmfLz+32CvLC4RMVkzEFYjxqyti1KhByvEacEdMWBpCuSSQ+IFRT84QjGPBCuz/cBom8PfSm3GjEsGc8PkdEEOEr&wc=SEARCHVAL%20LIKE%20%27CITY$%27&otptFlds=CATEGORY&returnGeom=0&nohaxr=10"
+        
+        let session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
+        
+        session.dataTaskWithURL(NSURL(string: urlString)!, completionHandler: { (taskData, taskResponse, taskError) -> Void in
+            var jsonReadError : NSError?
+            var jsonResult = NSJSONSerialization.JSONObjectWithData(taskData, options: NSJSONReadingOptions.MutableContainers, error: &jsonReadError) as NSDictionary
+            
+            let resultsArray = jsonResult["SearchResults"] as NSArray
+            
+            for (index, result) in enumerate(resultsArray){
+                if index > 0 {
+                    if let placeName = result["SEARCHVAL"] as String? {
+                        self.data.append(placeName)
+                    }
+                }
+            }
+
+            self.resultTableViewController.tableView.reloadData()
+        }).resume()
     }
     
     func mapViewDidLoad(mapView:AGSMapView!){
