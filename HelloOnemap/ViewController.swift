@@ -1,7 +1,7 @@
 //
 //  ViewController.swift
 //  HelloOnemap
-//
+//  Added Address Search
 //  Created by Zin Ko Ko Min on 20/3/15.
 //  Copyright (c) 2015 ZIN KO KO MIN. All rights reserved.
 //
@@ -27,7 +27,7 @@ class ViewController: UIViewController, AGSMapViewLayerDelegate, UISearchResults
     let xmax = 30037.5707551916
     let ymax = 40765.3094566208
     
-    var data = [Place]()
+    var searchResults = [Place]()
     let session = NSURLSession.sharedSession()
     
     var resultTableViewController = UITableViewController()
@@ -88,8 +88,8 @@ class ViewController: UIViewController, AGSMapViewLayerDelegate, UISearchResults
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        searchController.searchBar.text = data[indexPath.row].placeName
-        showSelectedSearchPlace(data[indexPath.row])
+        searchController.searchBar.text = searchResults[indexPath.row].placeName
+        showSelectedSearchPlace(searchResults[indexPath.row])
     }
     
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
@@ -98,7 +98,7 @@ class ViewController: UIViewController, AGSMapViewLayerDelegate, UISearchResults
     
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let rowData = data[indexPath.row].placeName
+        let rowData = searchResults[indexPath.row].placeName
         let cell = UITableViewCell()
         cell.textLabel?.text = rowData
         return cell
@@ -107,7 +107,7 @@ class ViewController: UIViewController, AGSMapViewLayerDelegate, UISearchResults
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return data.count
+        return searchResults.count
     }
     
     func updateSearchResultsForSearchController(searchController: UISearchController) {
@@ -131,7 +131,7 @@ class ViewController: UIViewController, AGSMapViewLayerDelegate, UISearchResults
                 var jsonResult = NSJSONSerialization.JSONObjectWithData(taskData, options: NSJSONReadingOptions.MutableContainers, error: &jsonReadError) as NSDictionary
                 
                 let resultsArray = jsonResult["SearchResults"] as NSArray
-                self.data = []
+                self.searchResults = []
                 for (index, result) in enumerate(resultsArray){
                     if index > 0 {
                         var place = Place()
@@ -152,7 +152,7 @@ class ViewController: UIViewController, AGSMapViewLayerDelegate, UISearchResults
                             place.Y = y.doubleValue
                         }
                         
-                        self.data.append(place)
+                        self.searchResults.append(place)
                     }
                 }
                 
