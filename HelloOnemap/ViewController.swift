@@ -36,6 +36,7 @@ class ViewController: UIViewController, AGSMapViewLayerDelegate, UISearchResults
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // UISearchController Setup
         searchController = UISearchController(searchResultsController: resultTableViewController)
         
         searchController.searchResultsUpdater = self
@@ -71,6 +72,7 @@ class ViewController: UIViewController, AGSMapViewLayerDelegate, UISearchResults
         
     }
     
+    // This function accept a Place structure and create a Point Graphics on the map representing the Place
     func showSelectedSearchPlace(selectedPlace :Place){
         searchController.active = false
         searchController.searchBar.text = selectedPlace.placeName
@@ -87,6 +89,7 @@ class ViewController: UIViewController, AGSMapViewLayerDelegate, UISearchResults
         
     }
     
+    // When user click on one of the cells, the address is passed to showSelectedSearchPlace function to display it on map
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         searchController.searchBar.text = searchResults[indexPath.row].placeName
         showSelectedSearchPlace(searchResults[indexPath.row])
@@ -96,7 +99,7 @@ class ViewController: UIViewController, AGSMapViewLayerDelegate, UISearchResults
         //showSelectedSearchPlace()
     }
     
-    
+    // Show addresses in table cells
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let rowData = searchResults[indexPath.row].placeName
         let cell = UITableViewCell()
@@ -110,6 +113,7 @@ class ViewController: UIViewController, AGSMapViewLayerDelegate, UISearchResults
         return searchResults.count
     }
     
+    // This function is called when the user enter address in search bar
     func updateSearchResultsForSearchController(searchController: UISearchController) {
         
         getAddresses(searchController.searchBar.text)
@@ -164,7 +168,6 @@ class ViewController: UIViewController, AGSMapViewLayerDelegate, UISearchResults
     
     func mapViewDidLoad(mapView:AGSMapView!){
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "responseToEventChanged:", name: AGSMapViewDidEndZoomingNotification, object: nil)
-        
 
     }
     
